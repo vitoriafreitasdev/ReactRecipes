@@ -1,0 +1,85 @@
+.user-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 1rem;
+    padding: 0.5rem;
+}
+
+.user-div h3{
+    margin: 1rem;
+}
+
+.form-recipe{
+    margin: 0.5rem;
+}
+
+.form-recipe label {
+    margin: 0.5rem;
+    padding: 0.5rem;
+
+}
+
+.form-recipe p {
+    margin: 0.2rem;
+    padding: 0.2rem;
+    font-size: large;
+}
+
+.form-recipe input[type="text"] {
+    width: 250px;
+    height: 30px;
+    text-align: center;
+}
+.form-recipe input[type="submit"]{
+    width: 150px;
+    height: 30px;
+    margin: 1rem;
+    background-color: #ddd;
+    border: none;
+    border-radius: 5px;
+}
+
+.form-recipe input[type="submit"]:hover{
+    opacity: 0.9;
+    cursor: pointer;
+}
+
+.user-recipes {
+    margin: 0 auto;
+    margin-bottom: 2rem;
+    width: 50vw;
+    text-indent: 20px;
+    background-color: #ddd;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+
+.user-recipes h2, h3, p{
+    margin: 0.8rem;
+}
+
+.btn {
+    margin: 0.5rem;
+    width: 150px;
+    height: 30px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+.btn:hover{
+    opacity: 0.8;
+}
+.delete-btn{
+    background-color: rgb(194, 18, 18);
+    color: #fff;
+}
+.edit-btn{
+    background-color: green;
+    color: #fff;
+}
+
+.link{
+    text-decoration: none;
+}
