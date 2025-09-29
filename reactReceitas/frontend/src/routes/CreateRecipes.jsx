@@ -70,7 +70,7 @@ const CreateRecipes = () => {
         }
     }
 
-    /* Fazer o editar agora! */
+  
   return (
     <div>
         {user && (
