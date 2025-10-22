@@ -65,7 +65,7 @@ const siteController = {
                 return res.status(404).json({msg: "Usuário não encontrado."})
             }
 
-            const checkPassword = bcrypt.compare(password, user.password)
+            const checkPassword = await bcrypt.compare(password, user.password)
 
             if(!checkPassword){
                 return res.status(404).json({msg: "Senha inválida."})
