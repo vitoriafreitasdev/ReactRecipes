@@ -5,7 +5,7 @@ const fs = require("fs")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 require("dotenv").config()
-const secret = process.env.SECRET
+const SECRET = process.env.SECRET
 
 const removeOldImage = (image) => {
     fs.unlink(`public/${image.src}`, (err) => {
@@ -77,7 +77,7 @@ const siteController = {
                 {
                     id: id
                 },
-                secret
+                SECRET
             )
             res.status(200).json({msg: "Autenticação realizada com sucesso.", token, id})
         } catch (error) {
