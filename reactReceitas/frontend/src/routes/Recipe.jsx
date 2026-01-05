@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+
 
 import { Await, useParams } from "react-router-dom"
 import { useState, useEffect } from "react"
@@ -13,7 +13,8 @@ const Recipe = () => {
     const [comments, setComments] = useState([])
     const [name, setName] = useState("")
     const [text, setText] = useState("")
-
+    const toast = useToast
+  
     useEffect(() => {
       const load = async () => {
         const res = await programFetch.get(`receitas/${id}`)
@@ -36,7 +37,7 @@ const Recipe = () => {
       setComments((comments) => [...comments, lastComment])
       setName("")
       setText("")
-      useToast(res.data.msg)
+      toast(res.data.msg)
     }
     const handleLike = async () => {
       await programFetch.patch(`/receitas/addlike/${id}`)

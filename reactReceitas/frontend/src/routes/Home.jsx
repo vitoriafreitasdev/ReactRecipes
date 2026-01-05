@@ -5,7 +5,6 @@ import { Link } from "react-router-dom"
 import "./Home.css"
 const Home = () => {
   const [recipes, setRecipes] = useState(null)
-  //const [users, setUsers] = useState(null)
 
   useEffect(() => {
     const load = async () => {
@@ -19,13 +18,13 @@ const Home = () => {
     
     <div className="home">
       
-      <div className="div">
-        <h2>Cadastre-se e poste suas proprias receitas.</h2>
+      <div className="div-receitas-links">
+        <h2>Cadastre-se e poste suas próprias receitas.</h2>
         <p>Aqui você encontra as melhores receitas para deliciosos pratos. Como as abaixo, já cadastradas, clique nelas para mais detalhes.</p>
         {recipes &&
         recipes.map((recipe) => (
-          <div>
-            <Link className="link" to={`/receita/${recipe._id}`}><h4>{recipe.title}</h4></Link>    
+          <div className="recipes-links">
+            <Link className="link" to={`/receita/${recipe._id}`}><h4 className="recipe-title">{recipe.title}</h4></Link>    
           </div>
         ))}
         
@@ -34,7 +33,7 @@ const Home = () => {
         <h1>Receitas:</h1>
         {recipes &&
         recipes.map((recipe) => (
-          <div key={recipe._id}>
+          <div key={recipe._id} className="recipe-cont">
               <h2>{recipe.title}</h2>
               <h3>Ingredientes: </h3>
               <p>{recipe.ingredients}</p>

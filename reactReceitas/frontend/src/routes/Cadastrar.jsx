@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+
 import { useState } from "react"
 import {useNavigate} from "react-router-dom"
 import programFetch from "../axios/config"
@@ -12,7 +12,7 @@ const Cadastrar = () => {
   const [confirmPassword, setConfirmPassword] = useState("")
 
   const navigate = useNavigate()
-
+  const toast = useToast
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -28,12 +28,12 @@ const Cadastrar = () => {
         const res = await programFetch.post("/cadastro", user)
 
         if(res.status == 201) {
-          useToast(res.data.msg)
+          toast(res.data.msg)
           navigate("/login")
         }
     } catch (error) {
         console.log(error)
-        useToast(error.response.data.msg, "error")
+        toast(error.response.data.msg, "error")
     }
   }
 

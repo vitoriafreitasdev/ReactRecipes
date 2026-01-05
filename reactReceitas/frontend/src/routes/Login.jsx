@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable no-unused-vars */
+
 import { useState } from "react"
 import {useNavigate} from "react-router-dom"
 import programFetch from "../axios/config"
@@ -11,6 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState("")
 
   const navigate = useNavigate()
+  const toast = useToast
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,13 +25,13 @@ const Login = () => {
         const res = await programFetch.post("/login", user)
 
         if(res.status == 200) {
-          useToast(res.data.msg)
+          toast(res.data.msg)
           localStorage.setItem("token", res.data.token)
           navigate(`/criarreceita/${res.data.id}`)
         }
     } catch (error) {
         console.log(error)
-        useToast(error.response.data.msg, "error")
+        toast(error.response.data.msg, "error")
     }
   }
 

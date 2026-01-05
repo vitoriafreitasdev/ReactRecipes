@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable no-unused-vars */
+
+import "./EditRecipe.css"
 import { useParams, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import useToast from "../hooks/useToast"
@@ -10,6 +10,8 @@ const EditRecipe = () => {
     const [inputs, setInputs] = useState({})
     const [image, setImage] = useState(null)
     const navigate = useNavigate()
+    const toast = useToast
+
     const handleChange = (event) => {
             if(event.target.name === "image"){
                 setImage(event.target.files[0])
@@ -37,19 +39,19 @@ const EditRecipe = () => {
                 },
             })
 
-            useToast(response.data.msg)
+            toast(response.data.msg)
             navigate("/")
         } catch (error) {
             console.log(error)
-            useToast(error.response.data.msg, "error")
+            toast(error.response.data.msg, "error")
         }
 
 
       }
   return (
-    <div>
-      <h1>Edite sua receita.</h1>
-      <form onSubmit={handleSubmit} className="form-recipe">
+    <div className="edit-recipe-main-div">
+      <form onSubmit={handleSubmit} className="form-recipe">         
+                    <h1>Edite sua receita.</h1>
                     <label>
                     <p>Título:</p>
                     <input type="text" placeholder="Defina um título" name="title" onChange={handleChange}/>

@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+
 /* eslint-disable no-unused-vars */
 
 import { useState, useEffect } from "react"
@@ -16,6 +16,7 @@ const CreateRecipes = () => {
     const [inputs, setInputs] = useState({})
     const [image, setImage] = useState(null)
     const navigate = useNavigate()
+    const toast = useToast
     const {id} = useParams()
     useEffect(() => {
         const load = async () =>{
@@ -23,8 +24,8 @@ const CreateRecipes = () => {
             setUser(res.data)
         } 
         const loadRecipe = async () => {
-        const res = await programFetch.get("/receitas")
-        setRecipes(res.data)
+            const res = await programFetch.get("/receitas")
+            setRecipes(res.data)
         }
         loadRecipe()
         load()
@@ -55,10 +56,10 @@ const CreateRecipes = () => {
                 },
             })
 
-            useToast(response.data.msg)
+            toast(response.data.msg)
         } catch (error) {
             console.log(error)
-            useToast(error.response.data.msg, "error")
+            toast(error.response.data.msg, "error")
         }
 
 
@@ -66,16 +67,18 @@ const CreateRecipes = () => {
     const handleDelete = async (recipeId) => {
         const res = await programFetch.delete(`/receitas/delete/${recipeId}`)
         if (res.status === 200){
-            useToast(res.data.msg)
+            toast(res.data.msg)
         }
     }
 
+    
   
   return (
-    <div>
+    // fiz assim para quando não tiver dados do usuários colocar a height com 100vh.
+    <div className={user.recipes.length == 0 ? "main_div" : ""}>
         {user && (
             <div key={user._id} className="user-div">
-              <h3>Ola,  {user.name}.  Coloque os dados abaixo para postar uma nova receita.</h3>
+              <h3>Olá,  {user.name}.  Coloque os dados abaixo para postar uma nova receita.</h3>
                 <form onSubmit={handleSubmit} className="form-recipe">
                     <label>
                     <p>Título:</p>

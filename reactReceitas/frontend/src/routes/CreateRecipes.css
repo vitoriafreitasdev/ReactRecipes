@@ -1,3 +1,6 @@
+.main_div{
+    height: 100vh;
+}
 .user-div {
     display: flex;
     justify-content: center;
@@ -9,6 +12,10 @@
 
 .user-div h3{
     margin: 1rem;
+}
+
+.user-div input, textarea{
+    margin: 0.2rem;
 }
 
 .form-recipe{
