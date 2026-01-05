@@ -1,6 +1,4 @@
 
-/* eslint-disable no-unused-vars */
-
 import { useState, useEffect } from "react"
 import programFetch from "../axios/config"
 import { useParams } from "react-router-dom"
@@ -8,14 +6,13 @@ import { Link } from "react-router-dom"
 import "./CreateRecipes.css"
 import useToast from "../hooks/useToast"
 
-import { useNavigate } from "react-router-dom"
 const CreateRecipes = () => {
     const [user, setUser] = useState(null)
     const [recipes, setRecipes] = useState(null)
 
     const [inputs, setInputs] = useState({})
     const [image, setImage] = useState(null)
-    const navigate = useNavigate()
+
     const toast = useToast
     const {id} = useParams()
 
