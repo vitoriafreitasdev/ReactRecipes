@@ -18,6 +18,7 @@ const CreateRecipes = () => {
     const navigate = useNavigate()
     const toast = useToast
     const {id} = useParams()
+
     useEffect(() => {
         const load = async () =>{
             const res = await programFetch.get(`/user/${id}`)
@@ -75,7 +76,7 @@ const CreateRecipes = () => {
   
   return (
     // fiz assim para quando não tiver dados do usuários colocar a height com 100vh.
-    <div className={user.recipes.length == 0 ? "main_div" : ""}>
+    <div className={user && user.recipes.length == 0 ? "main_div" : ""}>
         {user && (
             <div key={user._id} className="user-div">
               <h3>Olá,  {user.name}.  Coloque os dados abaixo para postar uma nova receita.</h3>
