@@ -5,9 +5,7 @@ app.use(express.json())
 app.use(cors())
 
 
-require('dotenv').config({ 
-  path: ['.env.local', '.env'] 
-});
+require('dotenv').config({ path: __dirname + '/.env' })
 
 app.use(express.static("public"))
 
