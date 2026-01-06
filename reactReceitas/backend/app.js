@@ -1,3 +1,4 @@
+
 const express = require("express")
 const cors = require("cors")
 const app = express()
@@ -9,7 +10,7 @@ require('dotenv').config({
   path: path.resolve(__dirname, '.env') 
 })
 
-app.use(express.static("public"))
+app.use('/images', express.static(path.join(__dirname, '../public/images')))
 
 const conm = require("./db/conm.js")
 conm()
