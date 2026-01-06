@@ -20,5 +20,5 @@ programFetch.interceptors.request.use((config) => {
     return Promise.reject(error)
 })
 
-export const linkToImg = "https://react-recipes-eta.vercel.app/images"
+export const linkToImg = "https://react-recipes-eta.vercel.app"
 export default programFetch;
