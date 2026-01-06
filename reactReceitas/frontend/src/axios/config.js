@@ -1,7 +1,9 @@
 
 import axios from "axios"
+//https://react-recipes-eta.vercel.app/api
+//http://localhost:3000/api
 const programFetch = axios.create({
-    baseURL: "http://localhost:3000/api",
+    baseURL: "https://react-recipes-eta.vercel.app/api",
     headers: {
         "Content-Type": "application/json"
     }
@@ -17,4 +19,5 @@ programFetch.interceptors.request.use((config) => {
     return Promise.reject(error)
 })
 
+export const linkToImg = "https://react-recipes-eta.vercel.app"
 export default programFetch;

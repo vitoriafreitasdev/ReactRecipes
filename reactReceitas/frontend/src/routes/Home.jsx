@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react"
 import programFetch from "../axios/config"
 import { Link } from "react-router-dom"
+import { linkToImg } from "../axios/config"
 import "./Home.css"
 const Home = () => {
   const [recipes, setRecipes] = useState(null)
@@ -42,7 +43,7 @@ const Home = () => {
               <h3>Tempo de preparo: </h3>
               <p>{recipe.preparationTime}</p>
               <h3>Imagem:</h3>
-              <img className="img" src={`http://localhost:3000/${recipe.src}`} alt={recipe.title} />
+              <img className="img" src={`${linkToImg}/${recipe.src}`} alt={recipe.title} />
           </div>
         ))
         }

@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom"
 import { Link } from "react-router-dom"
 import "./CreateRecipes.css"
 import useToast from "../hooks/useToast"
+import { linkToImg } from "../axios/config"
 
 const CreateRecipes = () => {
     const [user, setUser] = useState(null)
@@ -114,7 +115,7 @@ const CreateRecipes = () => {
                 <h3>Tempo de preparo: </h3>
                 <p>{recipe.preparationTime}</p>
                 <h3>Imagem:</h3>
-                <img className="img" src={`http://localhost:3000/${recipe.src}`} alt={recipe.title} />
+                <img className="img" src={`${linkToImg}/${recipe.src}`} alt={recipe.title} />
                 <div>
                     <button className="btn edit-btn"><Link className="link" to={`/editar/${recipe._id}`}>Editar</Link></button>
                     <button className="btn delete-btn" onClick={() => handleDelete(recipe._id)}>Deletar</button>

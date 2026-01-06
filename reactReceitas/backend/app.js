@@ -9,11 +9,6 @@ require('dotenv').config({
   path: path.resolve(__dirname, '.env') 
 })
 
-console.log('__dirname:', __dirname)
-console.log('Arquivo .env:', __dirname + '/.env')
-console.log('MONGODB_URI existe?', !!process.env.MONGODB_URI)
-console.log('SECRET existe?', !!process.env.SECRET)
-
 app.use(express.static("public"))
 
 const conm = require("./db/conm.js")
