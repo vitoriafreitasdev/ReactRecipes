@@ -1,3 +1,9 @@
+.loading{
+    text-align: center;
+    height: 100vh;
+    padding: 1rem;
+    font-weight: bold;
+}
 .home{
     display: flex;
     background-color: #f6f6f6  ;

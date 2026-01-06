@@ -6,16 +6,20 @@ import { Link } from "react-router-dom"
 import { linkToImg } from "../axios/config"
 import "./Home.css"
 const Home = () => {
+  const [loading, setLoading] = useState(true)
   const [recipes, setRecipes] = useState(null)
 
   useEffect(() => {
     const load = async () => {
+      setLoading(true)
       const res = await programFetch.get("/receitas")
       setRecipes(res.data)
+      setLoading(false)
     }
     load()
   }, [])
  
+  if (loading) return <div className="loading">Carregando dados...</div>
   return (
     
     <div className="home">
