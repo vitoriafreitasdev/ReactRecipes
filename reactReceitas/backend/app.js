@@ -4,8 +4,10 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-
-require('dotenv').config({ path: __dirname + '/.env' })
+const path = require('path')
+require('dotenv').config({ 
+  path: path.resolve(__dirname, '.env') 
+})
 
 app.use(express.static("public"))
 
@@ -18,3 +20,4 @@ app.use("/api", routes)
 app.listen(3000, function(){
     console.log("Servidor online")
 })
+
