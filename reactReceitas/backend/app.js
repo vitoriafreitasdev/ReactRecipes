@@ -4,6 +4,11 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
+
+require('dotenv').config({ 
+  path: ['.env.local', '.env'] 
+});
+
 app.use(express.static("public"))
 
 const conm = require("./db/conm.js")
