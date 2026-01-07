@@ -1,59 +1,66 @@
 
+const router = require("express").Router();
+const jwt = require("jsonwebtoken");
+const siteController = require("../controllers/siteController");
+const upload = require("../helpers/upload");
+require("dotenv").config();
 
-const router = require("express").Router()
-const jwt = require("jsonwebtoken")
-const siteController = require("../controllers/siteController")
-
-const secret = process.env.SECRET
-
-const upload = require("../helpers/upload")
-
-require("dotenv").config()
+const secret = process.env.SECRET;
 
 const checkToken = (req, res, next) => {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(" ")[1]
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(" ")[1];
 
     if(!token){
-        return res.status(401).json({msg: "Acesso negado!"})
+        return res.status(401).json({msg: "Acesso negado!"});
     }
     try {
-        const decoded = jwt.verify(token, secret)
-        req.userId = decoded.id
-        next()
+        const decoded = jwt.verify(token, secret);
+        req.userId = decoded.id;
+        next();
     } catch (error) {
-        console.log(error)
-        res.status(400).json({msg: "Ocorreu um erro."})
+        console.log(error);
+        res.status(400).json({msg: "Token inválido."});
     }
-}
-router.route("/cadastro").post((req, res) => siteController.register(req, res))
-router.route("/login").post((req, res) => siteController.login(req, res))
-router.route("/user/:id").get(checkToken, (req, res) => siteController.userRoute(req, res))
-router.route("/user/addRecipes")
-  .post(checkToken, upload.single("image"), (req, res, next) => {
-    const image = req.file;
-    
-    if(!image) {
-      return res.status(400).json({msg: "Por favor, envie um arquivo."});
-    }
-    
-    next();
-  }, siteController.addRecipes);
+};
 
-router.route("/receitas").get((req, res) => siteController.getRecipes(req, res))
-router.route("/receitas/:id").get((req, res) => siteController.getRecipe(req, res))
+// Rotas públicas
+router.route("/cadastro").post(siteController.register);
+router.route("/login").post(siteController.login);
+router.route("/receitas").get(siteController.getRecipes);
+router.route("/receitas/:id").get(siteController.getRecipe);
+router.route("/receitas/addlike/:id").patch(siteController.addLike);
+router.route("/receitas/addcomment/:id").patch(siteController.addComents);
+router.route("/users").get(siteController.getUser);
+
+// Rotas protegidas (com autenticação)
+router.route("/user/:id").get(checkToken, siteController.userRoute);
+
+// Criar receita (obriga imagem)
+router.route("/user/addRecipes")
+  .post(
+    checkToken, 
+    upload.single("image"), 
+    (req, res, next) => {
+      // MODIFICADO: Verifica se recebeu imagem
+      if(!req.file) {
+        return res.status(400).json({msg: "Por favor, envie uma imagem."});
+      }
+      next();
+    }, 
+    siteController.addRecipes
+  );
+
+// Deletar receita
 router.route("/receitas/delete/:id")
   .delete(checkToken, siteController.deleteRecipe);
-router.route("/user/editrecipes/:id").patch(checkToken, upload.single("image"), (req, res, next) => {
-    const image = req.file;
-    
-    if(!image) {
-      return res.status(400).json({msg: "Por favor, envie um arquivo."});
-    }
-    
-    next();
-  }, siteController.uptadeRecipe)
-router.route("/receitas/addlike/:id").patch((req, res) => siteController.addLike(req, res))
-router.route("/receitas/addcomment/:id").patch((req, res) => siteController.addComents(req, res))
-router.route("/users").get((req, res) => siteController.getUser(req, res))
-module.exports = router
+
+// Atualizar receita (imagem OPCIONAL)
+router.route("/user/editrecipes/:id")
+  .patch(
+    checkToken, 
+    upload.single("image"), // Ainda usa multer, mas aceita sem arquivo
+    siteController.uptadeRecipe // O controller já lida com imagem opcional
+  );
+
+module.exports = router;

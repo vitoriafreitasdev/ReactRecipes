@@ -70,7 +70,7 @@ const CreateRecipes = () => {
         }
     }
 
-    
+    if(!recipes) return <div className="loading"><p>Carregando...</p></div>
   
   return (
     // fiz assim para quando não tiver dados do usuários colocar a height com 100vh.

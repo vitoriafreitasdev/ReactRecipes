@@ -7,16 +7,33 @@ const bcrypt = require("bcrypt")
 require("dotenv").config()
 const SECRET = process.env.SECRET
 
-const removeOldImage = (image) => {
-    fs.unlink(`public/${image.src}`, (err) => {
-        if(err) {
-            console.log(err)
-        } else {
-            console.log("Imagem deletada do servidor.")
-        }
-    })
-}
+// const removeOldImage = (image) => {
+//     fs.unlink(`public/${image.src}`, (err) => {
+//         if(err) {
+//             console.log(err)
+//         } else {
+//             console.log("Imagem deletada do servidor.")
+//         }
+//     })
+// }
 
+// NOVO: Função para deletar do Cloudinary
+const cloudinary = require('cloudinary').v2;
+
+const removeCloudinaryImage = async (imageUrl) => {
+  try {
+    if (!imageUrl) return;
+    
+    // Extrai o public_id da URL do Cloudinary
+    const publicId = imageUrl.split('/').pop().split('.')[0];
+    const fullPublicId = `receitas/${publicId}`;
+    
+    await cloudinary.uploader.destroy(fullPublicId);
+    console.log("Imagem deletada do Cloudinary:", fullPublicId);
+  } catch (error) {
+    console.log("Erro ao deletar do Cloudinary:", error.message);
+  }
+};
 const siteController = {
     register: async (req, res) => {
         try {
@@ -111,13 +128,18 @@ const siteController = {
     },
     addRecipes: async (req, res) => {
         try {
-            
-            const {title, ingredients, preparation, preparationTime} = req.body 
-            const src = `images/${req.file.filename}`
-            const userId = req.userId // vem do token
+            const {title, ingredients, preparation, preparationTime} = req.body;
+            const userId = req.userId;
 
-            if(!title, !ingredients, !preparation, !preparationTime){
-                return res.status(400).json({msg: "Por favor, preencha todos campos."})
+            if(!title || !ingredients || !preparation || !preparationTime){
+                return res.status(400).json({msg: "Por favor, preencha todos campos."});
+            }
+
+            // NOVO: URL vem do Cloudinary, não do filesystem
+            let src = '';
+            if (req.file) {
+                // req.file.path contém a URL do Cloudinary
+                src = req.file.path;
             }
 
             const recipes = {
@@ -125,16 +147,21 @@ const siteController = {
                 ingredients: ingredients,
                 preparation: preparation,
                 preparationTime: preparationTime,
-                src: src,
+                src: src, // ← URL do Cloudinary
                 author: userId
-            }
+            };
 
-            const savedRecipe  = await Recipes.create(recipes)
-            const user = await User.findByIdAndUpdate(userId, {$push: { recipes: savedRecipe._id}}, {new: true})
-            res.status(200).json({msg: "Adiocionado com sucesso.", recipe: savedRecipe, user})
+            const savedRecipe = await Recipes.create(recipes);
+            const user = await User.findByIdAndUpdate(
+                userId, 
+                {$push: { recipes: savedRecipe._id}}, 
+                {new: true}
+            );
+            
+            res.status(200).json({msg: "Adicionado com sucesso.", recipe: savedRecipe, user});
         } catch (error) {
-            console.log(error)
-            res.status(500).send("Ocorreu um erro!")
+            console.log(error);
+            res.status(500).send("Ocorreu um erro!");
         }
     },
     getRecipes: async (req, res) => {
@@ -171,63 +198,76 @@ const siteController = {
     },
     deleteRecipe: async (req, res) => {
         try {
-            const recipeId = req.params.id 
-            const userId = req.userId
+            const recipeId = req.params.id;
+            const userId = req.userId;
             
             // Verifica se a receita pertence ao usuário
-            const recipe = await Recipes.findOne({ _id: recipeId, author: userId })
+            const recipe = await Recipes.findOne({ _id: recipeId, author: userId });
             if(!recipe){
-                return res.status(404).json({msg: "Receita não encontrada ou não autorizada."})
+                return res.status(404).json({msg: "Receita não encontrada ou não autorizada."});
             }
-            const deleted = await Recipes.findByIdAndDelete(recipeId)
+            
+            // NOVO: Deleta do Cloudinary se tiver imagem
+            if (recipe.src && recipe.src.includes('cloudinary')) {
+                await removeCloudinaryImage(recipe.src);
+            }
+            
+            const deleted = await Recipes.findByIdAndDelete(recipeId);
+            
             // Remove a referência no usuário
             await User.findByIdAndUpdate(
-            userId,
-            { $pull: { recipes: recipeId } }
-        )
-            removeOldImage(deleted)
+                userId,
+                { $pull: { recipes: recipeId } }
+            );
 
-            res.status(200).json({msg: "Deletado com sucesso.", deleted})
+            res.status(200).json({msg: "Deletado com sucesso.", deleted});
         } catch (error) {
-            console.log(error)
-            res.status(500).send("Ocorreu um erro!")
+            console.log(error);
+            res.status(500).send("Ocorreu um erro!");
         }
     },
     uptadeRecipe: async (req, res) => {
         try {
-            const recipeId = req.params.id 
-            const userId = req.userId
-            const {title, ingredients, preparation, preparationTime} = req.body 
+            const recipeId = req.params.id;
+            const userId = req.userId;
+            const {title, ingredients, preparation, preparationTime} = req.body;
+            
             // Verifica se a receita pertence ao usuário
-            const recipe = await Recipes.findOne({ _id: recipeId, author: userId })
+            const recipe = await Recipes.findOne({ _id: recipeId, author: userId });
             if(!recipe){
-                return res.status(404).json({msg: "Receita não encontrada ou não autorizada."})
+                return res.status(404).json({msg: "Receita não encontrada ou não autorizada."});
             }
-            let src = null 
-  
+            
+            let src = recipe.src; // Mantém a imagem existente por padrão
+    
             if(req.file) {
-                src = `images/${req.file.filename}`
+                // NOVO: Tem nova imagem - deleta a antiga do Cloudinary
+                if (recipe.src && recipe.src.includes('cloudinary')) {
+                    await removeCloudinaryImage(recipe.src);
+                }
+                // Atualiza com nova URL do Cloudinary
+                src = req.file.path;
             }
 
-            if(src) {
-                removeOldImage(recipe)
-            }
+            const updateData = {};
 
-            const updateData =  {}
+            if (title) updateData.title = title;
+            if (ingredients) updateData.ingredients = ingredients;
+            if (preparation) updateData.preparation = preparation;
+            if (preparationTime) updateData.preparationTime = preparationTime;
+            if (src) updateData.src = src;
 
-            if (title) updateData.title = title
-            if (ingredients) updateData.ingredients = ingredients
-            if (preparation) updateData.preparation = preparation
-            if (preparationTime) updateData.preparationTime = preparationTime
-            if (src) updateData.src = src
+            const uptadeRecipe = await Recipes.findByIdAndUpdate(
+                recipeId, 
+                updateData, 
+                {new: true}
+            );
 
-            const uptadeRecipe = await Recipes.findByIdAndUpdate(recipeId, updateData, {new: true})
-
-            res.status(200).json({msg: "Atualizado com sucesso.", uptadeRecipe})
+            res.status(200).json({msg: "Atualizado com sucesso.", uptadeRecipe});
 
         } catch (error) {
-            console.log(error)
-            res.status(500).send("Ocorreu um erro!")
+            console.log(error);
+            res.status(500).send("Ocorreu um erro!");
         }
     },
     addLike: async (req, res) => {
