@@ -45,6 +45,7 @@ const Recipe = () => {
     const handleLike = async () => {
       await programFetch.patch(`/receitas/addlike/${id}`)
     }
+    if (!recipe) return <div className="loading"><p>Carregando...</p></div>
   return (
     <div className="recipescontainer recipe">
       {

@@ -13,6 +13,7 @@ const CreateRecipes = () => {
 
     const [inputs, setInputs] = useState({})
     const [image, setImage] = useState(null)
+    const [loadPage, setLoadPage] = useState(null)
 
     const toast = useToast
     const {id} = useParams()
@@ -28,7 +29,7 @@ const CreateRecipes = () => {
         }
         loadRecipe()
         load()
-    }, [recipes, id])
+    }, [recipes, id, loadPage])
 
     const handleChange = (event) => {
         if(event.target.name === "image"){
@@ -56,6 +57,7 @@ const CreateRecipes = () => {
             })
 
             toast(response.data.msg)
+            setLoadPage(response.data)
         } catch (error) {
             console.log(error)
             toast(error.response.data.msg, "error")
