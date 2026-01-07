@@ -48,7 +48,7 @@ const Home = () => {
               <h3>Tempo de preparo: </h3>
               <p>{recipe.preparationTime}</p>
               <h3>Imagem:</h3>
-              <img className="img" src={`${linkToImg}/${recipe.src}`} alt={recipe.title} />
+              <img className="img" src={recipe.src.startsWith('http') ? recipe.src : `${linkToImg}/${recipe.src}`} />
           </div>
         ))
         }

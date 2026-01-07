@@ -115,7 +115,7 @@ const CreateRecipes = () => {
                 <h3>Tempo de preparo: </h3>
                 <p>{recipe.preparationTime}</p>
                 <h3>Imagem:</h3>
-                <img className="img" src={`${linkToImg}/${recipe.src}`} alt={recipe.title} />
+                <img className="img" src={recipe.src.startsWith('http') ? recipe.src : `${linkToImg}/${recipe.src}`} alt={recipe.title} />
                 <div>
                     <button className="btn edit-btn"><Link className="link" to={`/editar/${recipe._id}`}>Editar</Link></button>
                     <button className="btn delete-btn" onClick={() => handleDelete(recipe._id)}>Deletar</button>

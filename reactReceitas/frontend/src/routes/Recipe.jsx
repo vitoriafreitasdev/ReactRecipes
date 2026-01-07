@@ -58,7 +58,7 @@ const Recipe = () => {
               <h3>Tempo de preparo: </h3>
               <p>{recipe.preparationTime}</p>
               <h3>Imagem:</h3>
-              <img className="img" src={`${linkToImg}/${recipe.src}`} alt={recipe.title} />
+              <img className="img" src={recipe.src.startsWith('http') ? recipe.src : `${linkToImg}/${recipe.src}`} alt={recipe.title} />
 
             <div className="likes-container">
                 <button className="btn-like" onClick={handleLike}>&#x1F44D; {recipe.likes}</button>
